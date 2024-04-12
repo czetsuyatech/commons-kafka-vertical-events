@@ -10,15 +10,15 @@ used to guarantee the sending and receiving of messages across multiple applicat
 2. To implement a producer extend the class `AbstractKafkaProducer`.
 
 ```
-package com.hivemaster.iam.messaging.producers;
+package com.czetsuyatech.vertical.events.client.messaging.producers;
 
+import com.czetsuyatech.vertical.events.client.messaging.messages.IamEvent;
+import com.czetsuyatech.vertical.events.config.KafkaConfig;
 import com.czetsuyatech.vertical.events.messaging.messages.KeyAttributes;
 import com.czetsuyatech.vertical.events.messaging.messages.VerticalEventDTO;
 import com.czetsuyatech.vertical.events.messaging.messages.VerticalEventDTO.Entity;
 import com.czetsuyatech.vertical.events.messaging.messages.VerticalEventDTO.Event;
 import com.czetsuyatech.vertical.events.messaging.producers.AbstractKafkaProducer;
-import com.czetsuyatech.vertical.events.config.KafkaConfig;
-import com.hivemaster.iam.messaging.messages.IamEvent;
 import java.time.OffsetDateTime;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -89,11 +89,11 @@ public class IamEventProducer extends AbstractKafkaProducer<IamEvent, VerticalEv
 3. To implement a consumer we need to define a bean config that extends `AbstractKafkaBeansConfig`.
 
 ```
-package com.hivemaster.events.messaging.config;
+package com.czetsuyatech.vertical.events.client.messaging.config;
 
+import com.czetsuyatech.vertical.events.client.messaging.messages.EventType;
 import com.czetsuyatech.vertical.events.config.AbstractKafkaBeansConfig;
 import com.czetsuyatech.vertical.events.messaging.messages.VerticalEventDTO;
-import com.hivemaster.events.messaging.messages.EventType;
 import jakarta.validation.constraints.NotNull;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
@@ -116,18 +116,18 @@ import org.springframework.kafka.listener.adapter.RecordFilterStrategy;
 public class KafkaBeansConfig extends AbstractKafkaBeansConfig {
 
   @NotNull
-  protected RecordFilterStrategy<Object, Object> getRejectRecordFilterStrategy() {
+  public RecordFilterStrategy<Object, Object> getRejectRecordFilterStrategy() {
 
     return consumerRecord -> {
       log.debug("RecordFilterStrategy: {} ", consumerRecord.value());
-      VerticalEventDTO verticalEventDTO = (VerticalEventDTO) consumerRecord.value();
+      VerticalEventDTO verticalEvent = (VerticalEventDTO) consumerRecord.value();
 
-      return Optional.ofNullable(verticalEventDTO.getEvent())
+      return Optional.ofNullable(verticalEvent.getEvent())
           .filter(ev -> EventType.isPresent(ev.getEventType()))
           .map(
               ev -> {
                 log.info("Consuming bulk manual with eventId={}", ev.getEventId());
-                VerticalEventDTO.Entity entity = verticalEventDTO.getEntity();
+                VerticalEventDTO.Entity entity = verticalEvent.getEntity();
                 return Optional.ofNullable(entity).isEmpty();
               })
           .orElse(Boolean.TRUE);
@@ -144,10 +144,10 @@ public class KafkaBeansConfig extends AbstractKafkaBeansConfig {
 4. Use the bean we created in step 3 in the concrete consumer.
 
 ```
-package com.hivemaster.events.messaging.consumers;
+package com.czetsuyatech.vertical.events.client.messaging.consumers;
 
+import com.czetsuyatech.vertical.events.client.services.IamEventStrategy;
 import com.czetsuyatech.vertical.events.messaging.messages.VerticalEventDTO;
-import com.hivemaster.events.services.IamEventStrategy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -183,11 +183,9 @@ public class IamEventsConsumer {
     log.debug("{} from {}", in, topic);
   }
 }
-```
 
-These example codes are part of the Hivemaster project. You need to become my sponsor to access
-them.
+```
 
 ## Repository
 
-- https://github.com/czetsuyatech/commons-kafka-vertical-events
+- https://github.com/czetsuyatech/commons-kafka-vertical-events-client
