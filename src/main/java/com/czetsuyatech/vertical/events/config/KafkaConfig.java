@@ -28,7 +28,7 @@ public class KafkaConfig {
 
   @Data
   @Validated
-  public static class Topics {
+  public class Topics {
 
     @NotEmpty
     private String iamVertical;
