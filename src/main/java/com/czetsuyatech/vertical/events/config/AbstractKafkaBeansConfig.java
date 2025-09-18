@@ -20,7 +20,8 @@ public abstract class AbstractKafkaBeansConfig {
 
   @Bean
   public ConcurrentKafkaListenerContainerFactory<String, Object> concurrentKafkaListenerContainerFactory(
-      KafkaConfig kafkaConfig, ConsumerFactory<Object, Object> consumerFactory,
+      KafkaConfig kafkaConfig,
+      ConsumerFactory<Object, Object> consumerFactory,
       KafkaTemplate<String, String> kafkaTemplate) {
 
     ConcurrentKafkaListenerContainerFactory<String, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();

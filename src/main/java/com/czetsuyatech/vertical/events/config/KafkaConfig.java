@@ -48,7 +48,7 @@ public class KafkaConfig {
     private Long multiplier;
 
     @Min(3)
-    private Integer maxRetry;
+    private Long maxRetry;
   }
 
   @Data
