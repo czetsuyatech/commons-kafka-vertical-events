@@ -44,7 +44,7 @@ public abstract class AbstractKafkaBeansConfig {
 
     var recoverer = new DeadLetterPublishingRecoverer(kafkaTemplate,
         (consumerRecord, exception) -> {
-          getLogger().error("Fail processing message={}, exception={}", consumerRecord.value(), exception.getMessage());
+          getLogger().error("Fail processing message: {}, exception={}", consumerRecord.value(), exception.getMessage());
           return new TopicPartition(consumerRecord.topic() + "-dlt", consumerRecord.partition());
         });
 

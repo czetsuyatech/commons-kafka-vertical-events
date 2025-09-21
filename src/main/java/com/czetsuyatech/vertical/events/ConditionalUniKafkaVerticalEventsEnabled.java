@@ -1,6 +1,6 @@
 package com.czetsuyatech.vertical.events;
 
-import com.czetsuyatech.vertical.events.config.Constants;
+import com.czetsuyatech.vertical.events.config.UniKafkaConstants;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -12,8 +12,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @ConditionalOnProperty(
-    prefix = Constants.PROPERTIES_PREFIX,
-    name = {Constants.PROPERTY_ENABLED})
+    prefix = UniKafkaConstants.PROPERTIES_PREFIX,
+    name = {UniKafkaConstants.PROPERTY_ENABLED})
 public @interface ConditionalUniKafkaVerticalEventsEnabled {
 
 }
